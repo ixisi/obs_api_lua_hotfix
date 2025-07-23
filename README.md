@@ -3,16 +3,9 @@
 FOR OBS API LUA PROGRAMMING
 
 # HOW TO USE
-* OPTION 1 
+* OPTION 1
 
-  *DOWNLOAD THE FILE AND COPY AND PASTE IT TO YOUR PROJECT!*
-* OPTION 2 **USING SOCKET TO LOAD THE FILE**
-
-   ```lua
-   local socket= require("socket.http")
-   local code= socket.request("https://github.com/ixisi/obs_api_lua_hotfix/blob/main/obsapi_custom.lua")
-   loadstring(code)()
-   ```
+  *DOWNLOAD/COPY THE FILE AND COPY AND PASTE IT TO YOUR PROJECT!*
 
 
    
