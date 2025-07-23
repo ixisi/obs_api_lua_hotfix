@@ -1,6 +1,6 @@
 [[
     Author: iixisii
-    contact: @iixisii
+    contact: @iixisii / @XDeviixisiiX
 ]]
 
 local obs={utils={
