@@ -10,7 +10,7 @@ FOR OBS API LUA PROGRAMMING
 
    ```lua
    local socket= require("socket.http")
-   local code= socket.request("[https://github.com/ixisi/obs_api_lua_hotfix/obs_api_hotfix.lua](https://github.com/ixisi/obs_api_lua_hotfix/blob/main/obsapi_custom.lua)")
+   local code= socket.request("https://github.com/ixisi/obs_api_lua_hotfix/blob/main/obsapi_custom.lua")
    loadstring(code)()
    ```
 
