@@ -49,7 +49,21 @@ obs.script.text(..,, obs.enum.text.warn) -- create a warn label
 ### bool()
 ```lua
 local check_box= obs.script.bool(parent, id, label)
-check_box.checked(false or true) -- sets the check box to active if value is true and not if value is false
+check_box.checked(false or true) -- set/get
+```
+*Creates a bool checked box and returns*
+
+*The value it takes are 'true' or 'false' if the function is called without any value it will return the current value*
+### group()
+```lua
+obs.script.group(properties_t, id, title, parent, enum_type_id)
+```
+*Creates a group object and returns it*
+
+*enum_type_id accepts (normal, checked) by default the value is set to 'normal'*
+```lua
+obs.script.group(properties_t, id, title, obs.enum.group.normal)
+obs.script.group(properties_t, id, title, obs.enum.group.checked)
 ```
 # MORE DOCUMENTATION COMMING SOON...
 
