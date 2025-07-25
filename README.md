@@ -10,7 +10,7 @@ FOR OBS API LUA PROGRAMMING
 
 ### create()
 ```lua
-obs.create()
+obs.script.create()
 ```
 *Creates and returns properties object*
 
