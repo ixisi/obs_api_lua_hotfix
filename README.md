@@ -28,7 +28,9 @@ property_t.free() -- will remove the property object
 ### button()
 ```lua
 local button= obs.script.button(properties, id_name, text, onclick)
-button.text(text_value) -- set/get text 
+button.text(text_value) -- set/get text
+button.type(button_type) -- set button type
+button.url(url_link) -- set button url link
 button.click(function(property, settings) ... end) -- add an event when user clicks the button
 ```
 *Creates a button object and returns it*
