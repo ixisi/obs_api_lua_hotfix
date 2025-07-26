@@ -65,5 +65,31 @@ obs.script.group(properties_t, id, title, parent, enum_type_id)
 obs.script.group(properties_t, id, title, obs.enum.group.normal)
 obs.script.group(properties_t, id, title, obs.enum.group.checked)
 ```
+### list()
+```lua
+local option_list= obs.script.list(parent, id, title, enum_type_id, enum_format_id)
+option_list.str(display_name, id) -- insert string option
+option_list.int(display_name, id) -- insert int option (for int type the id should be a number)
+option_list.bul(display_name, id) -- insert boolean option (for bool type the id should be true or false)
+option_list.dbl(display_name, id) -- insert float option (for float type the id should be a number)
+```
+*The calling the methods will return the current list back*
+
+*So you could do these like this*
+```lua
+option_list.str("Option 1", "option1").str("Option 2", "option2") ...
+```
+*The code above will create two options for the list on the same line!*
+```lua
+option_list.clear() -- will remove all the options in the list
+local cursor= option_list.cursor(index) -- will return an option on current index
+cursor.remove() -- will remove the current option
+cursor.disable() -- will disable the current option (only for string format types e.g obs.enum.list.default & obs.enum.list.string)
+cursor.enable() -- will enable the current option
+cursor.title -- The title shown to the user
+cursor.id -- The value stored in the option
+cursor.ret() -- will return the list itself
+```
+
 # MORE DOCUMENTATION COMMING SOON...
 
