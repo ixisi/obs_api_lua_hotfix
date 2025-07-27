@@ -135,7 +135,29 @@ obs.scene:add_to_scene(my_new_source) -- adds the source to the current active s
 # scene:get_scene(scene_name)
 ```lua
 local a_scene= obs.scene:get_scene() -- this will return the current active scene
+local sceneitem= a_scene.get(source_name) -- will return a sceneitem fron the scene
+sceneitem.data/item -- will return the sceneitem itself
+sceneitem.free() -- will release the sceneitem
+sceneitem.get_source() -- will return the source of the sceneitem (Notice: No need to release this)
+a_scene.group_names() -- returns all the current groups in the scene names
+a_scene.add(source) -- will a source to the current scene (Notice: The result return will be a 'wrap' object call .free() to release)
+local my_label= a_scene.add_label(unique_id, text) -- will create a new source label in the scene
+my_label.text(value) -- set/get text
+my_label.font.size(size_t) -- will change the font size
+my_label.font.face(font_name) -- change the font name
+my_label.size.width(size_t) -- set/get width size
+my_label.size.height(size_t) -- set/get height size
+my_label.pos.x(value) -- set/get the x position
+my_label.pos.y(value) -- set/get the y position
+my_label.hide() -- hides the source
+my_label.show() -- shows the source
+my_label.free() -- release the source
+my_label.remove() -- remove the source from the scene
+--[[ a_scene.get_label() returns the same object as 'a_scene.add_label' does but in this case it will check if it already exists in the scene and return it]]
+local my_other_label= a_scene.get_label(source_name)
+my_other_label...
 ...
+
 ```
 # MORE DOCUMENTATION COMMING SOON...
 
