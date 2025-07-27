@@ -92,6 +92,50 @@ cursor.title -- The title shown to the user
 cursor.id -- The value stored in the option
 cursor.ret() -- will return the list itself
 ```
+# form(properties_t, title)
+```lua
+local my_form= obs.script.form(parent, title)
+-- use .add function to add anything to the form e.g(my_form.add.button(...))
+my_form.add.button(id, title, ...etc) -- this will add the button to current form (Notice when using .add you don't not need to give a parent)
+my_form.get(id) -- will return the property from the form
+my_form.free/remove() -- will remove the form itself and everything related to it
+my_form.hide() -- will hide the form
+my_form.show() -- will show the form
+my_form.remove() -- will remove the form
 
+my_form.onexit:hide() -- this will make the form hide itself when the user clicks on 'exit' button
+my_form.onexit:remove() -- this will remove the form when the user clicks the 'exit' button
+my_form.onexit:idle() -- this will do nothing when the user clicks on the form!
+my_form.exit:click(function(property, settings) ...end) -- this function will be executed when the user clicks on the 'exit' button
+```
+*Notice: when accessing .add this will allow you create objects only for the current form.*
+
+*All the methods for creating objects(property) are supported in the '.add' e.g(.add.list, .add.button, .add.text, ect.)*
+
+# scene:get_source(source_name)
+```lua
+local my_source= obs.scene:get_source(source_name) -- will return a source from anything that has it
+my_source.free() -- will release the source
+my_source.data/item -- is the main source itself
+my_source.get_source() -- will also return the source (use this if you are working  with sceneitem)
+```
+*The data that is return by 'get_source()' function is the same fron 'wrap()' function*
+
+*This means it is not an advanced way to manage source but just for quick lookup and confirmation use only.*
+# scene:name()
+```lua
+local current_scene_name= obs.scene:name() -- will return the current active scene's name
+print("THIS IS THE CURRENT SCENE: " .. tostring(current_scene_name))
+```
+# scene:add_to_scene(source)
+```lua
+obs.scene:add_to_scene(my_new_source) -- adds the source to the current active scene (Notice: this will return true/false)
+```
+*'add_to_scene' will add a source to the current active scene and will return true if succeeded or false if not.*
+# scene:get_scene(scene_name)
+```lua
+local a_scene= obs.scene:get_scene() -- this will return the current active scene
+...
+```
 # MORE DOCUMENTATION COMMING SOON...
 
