@@ -157,7 +157,43 @@ my_label.remove() -- remove the source from the scene
 local my_other_label= a_scene.get_label(source_name)
 my_other_label...
 ...
+local a_group= a_scene.add_group(id, refresh_bool) -- will add/get a group source in the current scene
+a_group.add(sceneitem) -- will add a sceneitem into the group source
+and returns true/false if added!
+a_group.free() -- will release the source use
 
+-- use .get_width() .get_height() if you to get the screen resoluation
+local width= a_scene.get_width()
+local height= a_scene.get_height()
+...
+```
+# utils.scheduler(timeout_value)
+```lua
+local my_scheduled_function= obs.utils.scheduler(1000) -- will schedule a function to be called later on (in this case 1000 milliseconds which is 1 seconds)
+my_scheduled_function.after(function() ... end) -- the main function to be executed
+my_scheduled_function.push(function ... end) -- use this to add multiple functions to be executed after the scheduled timeout (.clear() will delete the event)
+my_scheduled_function.clear() -- will remove all scheduled events for the current operation (my_scheduled_function)
+```
+# utils.wrap(object_t, object_type)
+```lua
+local a_object= obs.utils.wrap(object_t, object_type)
+a_object.free() -- will release the data
+a_object.data/item -- will return the current object
+a_object.type -- will return the passed type
+a_object.get_source() -- return the source (data/item)
+```
+*'wrap' function second parameter are found in 'obs.utils.[_TYPE]'*
+
+*Here are the current values that can be passed in.*
+```lua
+obs.utils.OBS_SCENEITEM_TYPE -- if you are working with sceneitem sources
+obs.utils.OBS_SRC_TYPE -- if you are working with sources
+obs.utils.OBS_OBJ_TYPE -- if you are working with obs_data_t
+obs.utils.OBS_ARR_TYPE -- if you are working with obs_data_array_t
+obs.utils.OBS_SCENE_TYPE -- you are you working with obs_scene_t
+obs.utils.OBS_SCENEITEM_LIST_TYPE -- if you are working with sceneitem_list
+obs.utils.OBS_SRC_LIST_TYPE -- if you are working with source_list 
+obs.utils.OBS_UN_IN_TYPE -- undefined type
 ```
 # MORE DOCUMENTATION COMMING SOON...
 
