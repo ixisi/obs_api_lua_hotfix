@@ -1,199 +1,319 @@
-# obs_api_lua_hotfix
+# OBS API Lua Hotfix
 
-FOR OBS API LUA PROGRAMMING
+A custom Lua wrapper for the OBS API, designed to simplify scripting and property management within OBS Studio.
 
-# HOW TO USE
-* OPTION 1
+---
 
-  *DOWNLOAD/COPY THE FILE AND COPY AND PASTE IT TO YOUR PROJECT!*
-# DOCUMENTATION 
+## Table of Contents
+
+- [How to Use](#how-to-use)
+- [API Reference](#api-reference)
+  - [create()](#create)
+  - [property\_t Default Methods](#property_t-default-methods)
+  - [button()](#button)
+  - [text()](#text)
+  - [bool()](#bool)
+  - [group()](#group)
+  - [list()](#list)
+  - [form()](#form)
+  - [scene](#sceneget_sourcesource_name)[:get](#sceneget_sourcesource_name)[\_source](#sceneget_sourcesource_name)[()](#sceneget_sourcesource_name)
+  - [scene](#scenename)[:name](#scenename)[()](#scenename)
+  - [scene](#sceneadd_to_scenemy_new_source)[:add](#sceneadd_to_scenemy_new_source)[\_to\_scene](#sceneadd_to_scenemy_new_source)[()](#sceneadd_to_scenemy_new_source)
+  - [scene](#sceneget_scene)[:get](#sceneget_scene)[\_scene](#sceneget_scene)[()](#sceneget_scene)
+  - [utils.scheduler()](#utilsschedulertimeout_value)
+  - [utils.wrap()](#utilswrapobject_t-object_type)
+
+---
+
+## How to Use
+
+**Option 1**
+
+Download or copy the file into your Lua OBS project
+
+---
+
+## API Reference
 
 ### create()
+
 ```lua
 obs.script.create()
 ```
-*Creates and returns properties object*
 
-### property_t global default methods
+Creates and returns a new `obs_properties_t` object.
+
+---
+
+### property\_t Default Methods
+
+All property objects support the following chainable methods:
+
 ```lua
-property_t.enable() -- enables the property object
-property_t.disable() -- disables the property object
-property_t.hint(text_value) -- set/get a description for the property, and shows it whenever the mouse hover over it
-property_t.hide() -- will hide the property object
-property_t.show() -- will show the property object
-property_t.onchange(function(property, settings) ... end) -- add an event for any changes to the property object
-property_t.get() -- will return property object itself
-property_t.free() -- will remove the property object
+property_t.enable()              -- Enables the property
+property_t.disable()             -- Disables the property
+property_t.hint(text_value)     -- Adds tooltip text shown on hover
+property_t.hide()               -- Hides the property
+property_t.show()               -- Shows the property
+property_t.onchange(callback)   -- Sets callback for value changes
+property_t.get()                -- Returns the property object itself
+property_t.free()               -- Frees/removes the property
 ```
+
+---
+
 ### button()
-```lua
-local button= obs.script.button(properties, id_name, text, onclick)
-button.text(text_value) -- set/get text
-button.type(button_type) -- set button type
-button.url(url_link) -- set button url link
-button.click(function(property, settings) ... end) -- add an event when user clicks the button
-```
-*Creates a button object and returns it*
-```lua
-local text_label= obs.script.text(parent, id, value, enum_type_id)
-text_label.text(value) -- set/get text
-text_label.error(value) -- set/get error
-text_label.warn(value) -- set/get warn
-```
-*Creates a label object and returns it*
 
-*enum_type_id accepts (error, text, default) by default the value is set to 'default'*
 ```lua
-obs.script.text(..,, obs.enum.text.default) -- create a text label
-obs.script.text(..,, obs.enum.text.error) -- create an error label
-obs.script.text(..,, obs.enum.text.warn) -- create a warn label
+local btn = obs.script.button(parent, id, label, onclick)
 ```
+
+Creates and returns a button object.
+
+```lua
+btn.text(text_value)       -- Set or get the button label
+btn.type(button_type)      -- Set the button type
+btn.url(url_link)          -- Set a URL for link buttons
+btn.click(callback)        -- Set click callback
+```
+
+---
+
+### text()
+
+```lua
+local label = obs.script.text(parent, id, value, enum_type)
+```
+
+Creates and returns a text label object.
+
+```lua
+label.text(value)          -- Set or get label text
+label.error(value)         -- Show error styling
+label.warn(value)          -- Show warning styling
+```
+
+`enum_type` options:
+
+- `obs.enum.text.default`
+- `obs.enum.text.error`
+- `obs.enum.text.warn`
+
+---
+
 ### bool()
-```lua
-local check_box= obs.script.bool(parent, id, label)
-check_box.checked(false or true) -- set/get
-```
-*Creates a bool checked box and returns*
 
-*The value it takes are 'true' or 'false' if the function is called without any value it will return the current value*
+```lua
+local checkbox = obs.script.bool(parent, id, label)
+```
+
+Creates and returns a boolean checkbox.
+
+```lua
+checkbox.checked(true|false) -- Set or get checked state
+```
+
+---
+
 ### group()
-```lua
-obs.script.group(properties_t, id, title, parent, enum_type_id)
-```
-*Creates a group object and returns it*
 
-*enum_type_id accepts (normal, checked) by default the value is set to 'normal'*
 ```lua
-obs.script.group(properties_t, id, title, obs.enum.group.normal)
-obs.script.group(properties_t, id, title, obs.enum.group.checked)
+local grp = obs.script.group(properties, id, title, parent, enum_type)
 ```
+
+Creates and returns a group property.
+
+`enum_type` options:
+
+- `obs.enum.group.normal`
+- `obs.enum.group.checked`
+
+---
+
 ### list()
-```lua
-local option_list= obs.script.list(parent, id, title, enum_type_id, enum_format_id)
-option_list.str(display_name, id) -- insert string option
-option_list.int(display_name, id) -- insert int option (for int type the id should be a number)
-option_list.bul(display_name, id) -- insert boolean option (for bool type the id should be true or false)
-option_list.dbl(display_name, id) -- insert float option (for float type the id should be a number)
-```
-*The calling the methods will return the current list back*
 
-*So you could do these like this*
 ```lua
-option_list.str("Option 1", "option1").str("Option 2", "option2") ...
+local list = obs.script.list(parent, id, title, enum_type, format_type)
 ```
-*The code above will create two options for the list on the same line!*
-```lua
-option_list.clear() -- will remove all the options in the list
-local cursor= option_list.cursor(index) -- will return an option on current index
-cursor.remove() -- will remove the current option
-cursor.disable() -- will disable the current option (only for string format types e.g obs.enum.list.default & obs.enum.list.string)
-cursor.enable() -- will enable the current option
-cursor.title -- The title shown to the user
-cursor.id -- The value stored in the option
-cursor.ret() -- will return the list itself
-```
-# form(properties_t, title)
-```lua
-local my_form= obs.script.form(parent, title)
--- use .add function to add anything to the form e.g(my_form.add.button(...))
-my_form.add.button(id, title, ...etc) -- this will add the button to current form (Notice when using .add you don't not need to give a parent)
-my_form.get(id) -- will return the property from the form
-my_form.free/remove() -- will remove the form itself and everything related to it
-my_form.hide() -- will hide the form
-my_form.show() -- will show the form
-my_form.remove() -- will remove the form
 
-my_form.onexit:hide() -- this will make the form hide itself when the user clicks on 'exit' button
-my_form.onexit:remove() -- this will remove the form when the user clicks the 'exit' button
-my_form.onexit:idle() -- this will do nothing when the user clicks on the form!
-my_form.exit:click(function(property, settings) ...end) -- this function will be executed when the user clicks on the 'exit' button
-```
-*Notice: when accessing .add this will allow you create objects only for the current form.*
+Creates and returns a dropdown or list selector.
 
-*All the methods for creating objects(property) are supported in the '.add' e.g(.add.list, .add.button, .add.text, ect.)*
+```lua
+list.str(display, id)   -- Add a string option
+list.int(display, id)   -- Add an integer option
+list.bul(display, id)   -- Add a boolean option
+list.dbl(display, id)   -- Add a float option
+list.clear()            -- Remove all options
 
-# scene:get_source(source_name)
-```lua
-local my_source= obs.scene:get_source(source_name) -- will return a source from anything that has it
-my_source.free() -- will release the source
-my_source.data/item -- is the main source itself
-my_source.get_source() -- will also return the source (use this if you are working  with sceneitem)
+local item = list.cursor(index)
+item.remove()           -- Remove this option
+item.disable()          -- Disable the option
+item.enable()           -- Enable the option
+item.title              -- Display text
+item.id                 -- Associated value
+item.ret()              -- Returns list for chaining
 ```
-*The data that is return by 'get_source()' function is the same fron 'wrap()' function*
 
-*This means it is not an advanced way to manage source but just for quick lookup and confirmation use only.*
-# scene:name()
+Example chaining:
+
 ```lua
-local current_scene_name= obs.scene:name() -- will return the current active scene's name
-print("THIS IS THE CURRENT SCENE: " .. tostring(current_scene_name))
+list.str("One", "1").str("Two", "2")
 ```
-# scene:add_to_scene(source)
+
+---
+
+### form()
+
 ```lua
-obs.scene:add_to_scene(my_new_source) -- adds the source to the current active scene (Notice: this will return true/false)
+local form = obs.script.form(parent, title)
 ```
-*'add_to_scene' will add a source to the current active scene and will return true if succeeded or false if not.*
-# scene:get_scene(scene_name)
+
+Creates and returns a form container for grouping UI elements.
+
 ```lua
-local a_scene= obs.scene:get_scene() -- this will return the current active scene
-local sceneitem= a_scene.get(source_name) -- will return a sceneitem fron the scene
-sceneitem.data/item -- will return the sceneitem itself
-sceneitem.free() -- will release the sceneitem
-sceneitem.get_source() -- will return the source of the sceneitem (Notice: No need to release this)
-a_scene.group_names() -- returns all the current groups in the scene names
-a_scene.add(source) -- will a source to the current scene (Notice: The result return will be a 'wrap' object call .free() to release)
-local my_label= a_scene.add_label(unique_id, text) -- will create a new source label in the scene
-my_label.text(value) -- set/get text
-my_label.font.size(size_t) -- will change the font size
-my_label.font.face(font_name) -- change the font name
-my_label.size.width(size_t) -- set/get width size
-my_label.size.height(size_t) -- set/get height size
-my_label.pos.x(value) -- set/get the x position
-my_label.pos.y(value) -- set/get the y position
-my_label.hide() -- hides the source
-my_label.show() -- shows the source
-my_label.free() -- release the source
-my_label.remove() -- remove the source from the scene
---[[ a_scene.get_label() returns the same object as 'a_scene.add_label' does but in this case it will check if it already exists in the scene and return it]]
-local my_other_label= a_scene.get_label(source_name)
-my_other_label...
+form.add.button(id, label, ...)       -- Add a button
+form.add.text(id, value, enum_type)   -- Add a label
+form.add.list(...)                    -- Add a dropdown
 ...
-local a_group= a_scene.add_group(id, refresh_bool) -- will add/get a group source in the current scene
-a_group.add(sceneitem) -- will add a sceneitem into the group source
-and returns true/false if added!
-a_group.free() -- will release the source use
+form.get(id)                          -- Retrieve a specific property
+form.free() / form.remove()           -- Remove form and its contents
+form.hide() / form.show()             -- Toggle form visibility
 
--- use .get_width() .get_height() if you to get the screen resoluation
-local width= a_scene.get_width()
-local height= a_scene.get_height()
-...
+form.onexit:hide()    -- Hide on exit
+form.onexit:remove()  -- Remove on exit
+form.onexit:idle()    -- Do nothing on exit
+form.exit:click(cb)   -- Callback on exit button click
 ```
-# utils.scheduler(timeout_value)
-```lua
-local my_scheduled_function= obs.utils.scheduler(1000) -- will schedule a function to be called later on (in this case 1000 milliseconds which is 1 seconds)
-my_scheduled_function.after(function() ... end) -- the main function to be executed
-my_scheduled_function.push(function ... end) -- use this to add multiple functions to be executed after the scheduled timeout (.clear() will delete the event)
-my_scheduled_function.clear() -- will remove all scheduled events for the current operation (my_scheduled_function)
-```
-# utils.wrap(object_t, object_type)
-```lua
-local a_object= obs.utils.wrap(object_t, object_type)
-a_object.free() -- will release the data
-a_object.data/item -- will return the current object
-a_object.type -- will return the passed type
-a_object.get_source() -- return the source (data/item)
-```
-*'wrap' function second parameter are found in 'obs.utils.[_TYPE]'*
 
-*Here are the current values that can be passed in.*
+---
+
+### scene\:get\_source(source\_name)
+
 ```lua
-obs.utils.OBS_SCENEITEM_TYPE -- if you are working with sceneitem sources
-obs.utils.OBS_SRC_TYPE -- if you are working with sources
-obs.utils.OBS_OBJ_TYPE -- if you are working with obs_data_t
-obs.utils.OBS_ARR_TYPE -- if you are working with obs_data_array_t
-obs.utils.OBS_SCENE_TYPE -- you are you working with obs_scene_t
-obs.utils.OBS_SCENEITEM_LIST_TYPE -- if you are working with sceneitem_list
-obs.utils.OBS_SRC_LIST_TYPE -- if you are working with source_list 
-obs.utils.OBS_UN_IN_TYPE -- undefined type
+local source = obs.scene:get_source(name)
 ```
-# MORE DOCUMENTATION COMMING SOON...
+
+Gets a source by name from any context.
+
+```lua
+source.free()          -- Free the source
+source.data/item       -- The wrapped OBS source
+source.get_source()    -- Alias for source itself
+```
+
+---
+
+### scene\:name()
+
+```lua
+local scene_name = obs.scene:name()
+print("Current scene: " .. scene_name)
+```
+
+---
+
+### scene\:add\_to\_scene(my\_new\_source)
+
+```lua
+local result = obs.scene:add_to_scene(source)
+```
+
+Adds a source to the current active scene.
+
+- Returns `true` if added successfully, `false` otherwise.
+
+---
+
+### scene\:get\_scene()
+
+```lua
+local scene = obs.scene:get_scene()
+local item = scene.get(source_name)
+```
+
+Returns the current active scene and access to its items.
+
+```lua
+item.data/item       -- The actual sceneitem
+item.free()          -- Frees the sceneitem
+item.get_source()    -- Gets the source (no need to free)
+
+scene.group_names()  -- List group names in scene
+scene.add(source)    -- Adds source, returns wrapped item
+
+-- Add and manage labels
+local label = scene.add_label(id, text)
+label.text(value)            -- Set text
+label.font.size(size)        -- Font size
+label.font.face(font)        -- Font name
+label.size.width(w)          -- Width
+label.size.height(h)         -- Height
+label.pos.x(x)               -- X position
+label.pos.y(y)               -- Y position
+label.hide() / show()        -- Toggle visibility
+label.remove() / free()      -- Remove or free
+
+-- Retrieve existing label
+local label = scene.get_label(name)
+
+-- Groups
+local group = scene.add_group(id, refresh)
+group.add(item)         -- Add sceneitem to group
+```
+
+Scene resolution:
+
+```lua
+scene.get_width()
+scene.get_height()
+```
+
+---
+
+### utils.scheduler(timeout\_ms)
+
+```lua
+local task = obs.utils.scheduler(1000) -- Delay: 1000 ms (1 second)
+```
+
+Schedules delayed tasks.
+
+```lua
+task.after(function() ... end)  -- Run after timeout
+task.push(function() ... end)   -- Add to execution queue
+task.clear()                    -- Cancel all scheduled
+```
+
+---
+
+### utils.wrap(object, type)
+
+```lua
+local wrapped = obs.utils.wrap(obj, obs.utils.OBS_SRC_TYPE)
+```
+
+Wraps an OBS object for easier handling.
+
+```lua
+wrapped.free()       -- Free manually
+wrapped.data/item    -- Access underlying object
+wrapped.get_source() -- Alias for item
+```
+
+Supported types:
+
+- `OBS_SCENEITEM_TYPE`
+- `OBS_SRC_TYPE`
+- `OBS_OBJ_TYPE`
+- `OBS_ARR_TYPE`
+- `OBS_SCENE_TYPE`
+- `OBS_SCENEITEM_LIST_TYPE`
+- `OBS_SRC_LIST_TYPE`
+- `OBS_UN_IN_TYPE`
+
+---
+
+### More Coming Soon...
+
+Stay tuned for more features and helper methods!
 
