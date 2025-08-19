@@ -14,7 +14,7 @@ A custom Lua wrapper for the OBS API, designed to simplify scripting and propert
   - [text()](#text)
   - [bool()](#bool)
   - [group()](#group)
-  - [list()](#list)
+  - [options()](#options)
   - [form()](#form)
   - [scene](#sceneget_sourcesource_name)[:get](#sceneget_sourcesource_name)[\_source](#sceneget_sourcesource_name)[()](#sceneget_sourcesource_name)
   - [scene](#scenename)[:name](#scenename)[()](#scenename)
@@ -130,10 +130,10 @@ Creates and returns a group property.
 
 ---
 
-### list()
+### options()
 
 ```lua
-local list = obs.script.list(parent, id, title, enum_type, format_type)
+local list = obs.script.options(parent, id, title, enum_type, format_type)
 ```
 
 Creates and returns a dropdown or list selector.
